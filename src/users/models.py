@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from src.core.database import Base, UUIDMixin, TimestampMixin
-
 
 if TYPE_CHECKING:
     from src.organizers.models import Organizer
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.core.database import Base, UUIDMixin, TimestampMixin
 
 
 class User(Base, UUIDMixin, TimestampMixin):

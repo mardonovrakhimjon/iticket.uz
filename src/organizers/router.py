@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 
 from src.organizers.models import Organizer
-from src.core.database import get_db, AsyncSession
+from src.core.database import AsyncSession, get_db
 from src.users.models import User
 from src.auth.dependencies import get_current_active_user, get_current_active_superuser
 from src.organizers.schemas import OrganizerCreate, OrganizerResponse, OrganizerApprove
