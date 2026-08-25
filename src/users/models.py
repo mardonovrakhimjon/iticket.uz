@@ -6,6 +6,7 @@ from src.core.database import Base, UUIDMixin, TimestampMixin
 
 if TYPE_CHECKING:
     from src.organizers.models import Organizer
+    from src.orders.models import Order
 
 
 class User(Base, UUIDMixin, TimestampMixin):
@@ -19,3 +20,4 @@ class User(Base, UUIDMixin, TimestampMixin):
     organizer: Mapped["Organizer"] = relationship(
         back_populates="user", foreign_keys="Organizer.user_id"
     )
+    orders: Mapped[list["Order"]] = relationship(back_populates="user")

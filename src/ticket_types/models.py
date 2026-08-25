@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from src.core.database import Base, UUIDMixin, TimestampMixin
 from src.events.models import Event
+
+if TYPE_CHECKING:
+    from src.orders.models import Order
 
 
 class TicketType(Base, UUIDMixin, TimestampMixin):
@@ -16,3 +21,4 @@ class TicketType(Base, UUIDMixin, TimestampMixin):
     is_active: Mapped[bool] = mapped_column("is_active", nullable=True, default=True)
 
     event: Mapped[Event] = relationship(foreign_keys=[event_id], back_populates="ticket_types")
+    orders: Mapped[list["Order"]] = relationship(back_populates="ticket_type")
