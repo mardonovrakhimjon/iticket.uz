@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 
 from src.core.database import AsyncSession
@@ -7,6 +9,11 @@ from src.ticket_types.models import TicketType
 class TicketTypeRepository:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
+
+    async def get_ticket_type_by_id(self, ticket_type_id: UUID) -> TicketType | None:
+        stmt = select(TicketType).where(TicketType.id == ticket_type_id)
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none()
 
     async def get_ticket_type_by_name(self, event_id: str, name: str) -> TicketType | None:
         stmt = select(TicketType).where(TicketType.event_id == event_id, TicketType.name == name)

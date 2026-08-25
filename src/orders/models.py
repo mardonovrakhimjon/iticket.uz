@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from enum import Enum
 from datetime import datetime
 
@@ -5,8 +6,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from src.core.database import Base, UUIDMixin, TimestampMixin
-from src.users.models import User
-from src.ticket_types.models import TicketType
+
+if TYPE_CHECKING:
+    from src.users.models import User
+    from src.ticket_types.models import TicketType
 
 
 class OrderStatus(str, Enum):
@@ -29,7 +32,7 @@ class Order(Base, UUIDMixin, TimestampMixin):
     )
     expires_at: Mapped[datetime] = mapped_column("expires_at", nullable=False)
 
-    user: Mapped[User] = relationship(foreign_keys=[user_id], back_populates="orders")
-    ticket_type: Mapped[TicketType] = relationship(
+    user: Mapped["User"] = relationship(foreign_keys=[user_id], back_populates="orders")
+    ticket_type: Mapped["TicketType"] = relationship(
         foreign_keys=[ticket_type_id], back_populates="orders"
     )
