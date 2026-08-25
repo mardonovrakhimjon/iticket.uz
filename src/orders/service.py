@@ -39,3 +39,6 @@ class OrderService:
 
     async def get_order(self, order_id: UUID) -> Order | None:
         return await self.repository.get_order(order_id)
+
+    async def cancel_order(self, order_id: UUID) -> Order | None:
+        return await self.repository.cancel_order(order_id)

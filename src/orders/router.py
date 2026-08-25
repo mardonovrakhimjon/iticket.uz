@@ -46,10 +46,12 @@ async def get_order_list(
     return OrderResponseList(orders=orders)  # type: ignore
 
 
-# @router.post('/{order_id}/cancel', response_model=OrderResponse)
-# async def cancel_order(
-#     order_id: UUID,
-#     user: User = Depends(get_current_active_user),
-#     db: AsyncSession = Depends(get_db),
-# ) -> Order:
-#     pass
+@router.post("/{order_id}/cancel", response_model=OrderResponse)
+async def cancel_order(
+    order_id: UUID,
+    user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+) -> Order:
+    service = OrderService(OrderRepository(db))
+    order = await service.cancel_order(order_id)  # type: ignore
+    return order  # type: ignore

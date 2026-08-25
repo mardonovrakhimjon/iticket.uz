@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 
 from src.core.database import AsyncSession
-from src.orders.models import Order
+from src.orders.models import Order, OrderStatus
 
 
 class OrderRepository:
@@ -25,3 +25,9 @@ class OrderRepository:
         stmpt = select(Order).where(Order.id == order_id)
         orders = await self.db.execute(stmpt)
         return orders.scalar_one_or_none()
+
+    async def cancel_order(self, order_id: UUID) -> Order | None:
+        order = await self.get_order(order_id)
+        order.status = OrderStatus.CANCELLED  # type: ignore
+        await self.db.commit()
+        return order
