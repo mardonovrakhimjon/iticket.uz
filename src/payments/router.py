@@ -12,6 +12,7 @@ from src.orders.service import OrderService
 from src.orders.schemas import OrderResponse
 from src.orders.repository import OrderRepository
 from src.payments.service import PaymentService
+from src.ticket_types.repository import TicketTypeRepository
 
 
 router = APIRouter()
@@ -97,6 +98,8 @@ async def verify_demo(
     result = payment_service.verify_demo(data.otp)
     if result:
         order.status = OrderStatus.PAID
+        ticket_type = await TicketTypeRepository(db).get_ticket_type_by_id(order.ticket_type_id)  # type: ignore
+        ticket_type.quantity_sold += order.quantity  # type: ignore
         db.add(order)
         await db.commit()
 
