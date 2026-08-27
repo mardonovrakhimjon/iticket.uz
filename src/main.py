@@ -8,6 +8,7 @@ from src.categories import router as categories
 from src.events import router as events
 from src.ticket_types import router as ticket_types
 from src.orders import router as orders
+from src.payments import router as payments
 
 # Barcha SQLAlchemy modellari mapper konfiguratsiyasidan oldin import qilinishi kerak,
 # aks holda `relationship()` ichidagi satr(string) sifatidagi class nomlari topilmaydi.
@@ -26,7 +27,7 @@ app = FastAPI(title=settings.PROJECT_NAME)
 app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["auth"])
 app.include_router(events.router, prefix=f"{settings.API_V1_PREFIX}/events", tags=["events"])
 app.include_router(orders.router, prefix=f"{settings.API_V1_PREFIX}/orders", tags=["orders"])
-# app.include_router(payments.router, prefix=f"{api}/payments", tags=["payments"])
+app.include_router(payments.router, prefix=f"{settings.API_V1_PREFIX}/payments", tags=["payments"])
 # app.include_router(checkin.router, prefix=f"{api}/checkin", tags=["checkin"])
 app.include_router(
     organizers.router, prefix=f"{settings.API_V1_PREFIX}/organizers", tags=["organizers"]
