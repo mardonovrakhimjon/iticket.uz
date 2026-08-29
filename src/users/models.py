@@ -22,5 +22,9 @@ class User(Base, UUIDMixin, TimestampMixin):
         back_populates="user", foreign_keys="Organizer.user_id"
     )
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
-    tickets: Mapped[list["Ticket"]] = relationship(back_populates="owner_user")
-    chacked_tickets: Mapped[list["Ticket"]] = relationship(back_populates="checked_in_by")
+    tickets: Mapped[list["Ticket"]] = relationship(
+        foreign_keys="Ticket.owner_user_id", back_populates="owner_user"
+    )
+    checked_tickets: Mapped[list["Ticket"]] = relationship(
+        foreign_keys="Ticket.checked_in_by_id", back_populates="checked_in_by"
+    )

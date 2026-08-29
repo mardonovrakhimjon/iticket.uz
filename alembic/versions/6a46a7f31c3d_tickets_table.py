@@ -1,8 +1,8 @@
 """tickets table
 
-Revision ID: 63c52002d57a
+Revision ID: 6a46a7f31c3d
 Revises: dfd1509da1ac
-Create Date: 2026-08-29 20:41:15.819245
+Create Date: 2026-08-29 20:58:13.137893
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '63c52002d57a'
+revision: str = '6a46a7f31c3d'
 down_revision: Union[str, Sequence[str], None] = 'dfd1509da1ac'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,10 +29,11 @@ def upgrade() -> None:
     sa.Column('status', sa.Enum('VALID', 'USED', 'CANCELLED', name='ticketstatus'), nullable=False),
     sa.Column('issued_at', sa.DateTime(), nullable=True),
     sa.Column('used_at', sa.DateTime(), nullable=True),
-    sa.Column('checked_in_by_id', sa.String(), nullable=True),
+    sa.Column('checked_in_by_id', sa.UUID(), nullable=False),
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('created_at', sa.String(), server_default='now()', nullable=False),
     sa.Column('updated_at', sa.String(), server_default='now()', nullable=False),
+    sa.ForeignKeyConstraint(['checked_in_by_id'], ['users.id'], name=op.f('fk_tickets_checked_in_by_id_users')),
     sa.ForeignKeyConstraint(['event_id'], ['events.id'], name=op.f('fk_tickets_event_id_events')),
     sa.ForeignKeyConstraint(['order_id'], ['orders.id'], name=op.f('fk_tickets_order_id_orders')),
     sa.ForeignKeyConstraint(['owner_user_id'], ['users.id'], name=op.f('fk_tickets_owner_user_id_users')),

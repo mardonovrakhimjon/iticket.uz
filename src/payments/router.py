@@ -13,6 +13,7 @@ from src.orders.schemas import OrderResponse
 from src.orders.repository import OrderRepository
 from src.payments.service import PaymentService
 from src.ticket_types.repository import TicketTypeRepository
+from src.tickets.models import Ticket
 
 
 router = APIRouter()
@@ -94,14 +95,27 @@ async def verify_demo(
     if order.expires_at < datetime.now():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="order expired")
 
+    ticket_type = await TicketTypeRepository(db).get_ticket_type_by_id(order.ticket_type_id)  # type: ignore
+    if not ticket_type:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="ticket_type not found")
+
     payment_service = PaymentService(order)
     result = payment_service.verify_demo(data.otp)
     if result:
         order.status = OrderStatus.PAID
-        ticket_type = await TicketTypeRepository(db).get_ticket_type_by_id(order.ticket_type_id)  # type: ignore
         ticket_type.quantity_sold += order.quantity  # type: ignore
         db.add(order)
         await db.commit()
+        for i in range(order.quantity):
+            ticket = Ticket(
+                order_id=order.id,
+                ticket_type_id=ticket_type.id,
+                event_id=order.ticket_type.event_id,
+                owner_user_id=user.id,
+            )
+            db.add(ticket)
+            await db.commit()
+            await db.refresh(ticket)
 
         return PayResponse(status="success", order=order)  # type: ignore
 

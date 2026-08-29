@@ -27,17 +27,23 @@ class Ticket(Base, UUIDMixin, TimestampMixin):
     ticket_type_id: Mapped[str] = mapped_column("ticket_type_id", ForeignKey("ticket_types.id"))
     event_id: Mapped[str] = mapped_column("event_id", ForeignKey("events.id"))
     owner_user_id: Mapped[str] = mapped_column("owner_user_id", ForeignKey("users.id"))
-    status: Mapped[TicketStatus] = mapped_column("status", default=TicketStatus.VALID)
+    status: Mapped[TicketStatus] = mapped_column(
+        "status", default=TicketStatus.VALID, nullable=True
+    )
     issued_at: Mapped[datetime] = mapped_column("issued_at", default=datetime.now, nullable=True)
-    used_at: Mapped[datetime] = mapped_column("used_at", nullable=True)
-    checked_in_by_id: Mapped[str] = mapped_column("checked_in_by_id", nullable=True)
+    used_at: Mapped[datetime] = mapped_column("used_at", nullable=True, default=None)
+    checked_in_by_id: Mapped[str] = mapped_column(
+        "checked_in_by_id", ForeignKey("users.id"), nullable=True
+    )
 
     order: Mapped["Order"] = relationship(foreign_keys=[order_id], back_populates="tickets")
     ticket_type: Mapped["TicketType"] = relationship(
         foreign_keys=[ticket_type_id], back_populates="tickets"
     )
     event: Mapped["Event"] = relationship(foreign_keys=[event_id], back_populates="tickets")
-    owner_use: Mapped["User"] = relationship(foreign_keys=[owner_user_id], back_populates="tickets")
+    owner_user: Mapped["User"] = relationship(
+        foreign_keys=[owner_user_id], back_populates="tickets"
+    )
     checked_in_by: Mapped["User"] = relationship(
-        foreign_keys=[checked_in_by_id], back_populates="chacked_tickets"
+        foreign_keys=[checked_in_by_id], back_populates="checked_tickets"
     )
