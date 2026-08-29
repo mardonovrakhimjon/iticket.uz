@@ -7,6 +7,7 @@ from src.core.database import Base, UUIDMixin, TimestampMixin
 if TYPE_CHECKING:
     from src.organizers.models import Organizer
     from src.orders.models import Order
+    from src.tickets.models import Ticket
 
 
 class User(Base, UUIDMixin, TimestampMixin):
@@ -21,3 +22,5 @@ class User(Base, UUIDMixin, TimestampMixin):
         back_populates="user", foreign_keys="Organizer.user_id"
     )
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
+    tickets: Mapped[list["Ticket"]] = relationship(back_populates="owner_user")
+    chacked_tickets: Mapped[list["Ticket"]] = relationship(back_populates="checked_in_by")

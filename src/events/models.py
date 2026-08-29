@@ -12,6 +12,7 @@ from src.categories.models import Category
 
 if TYPE_CHECKING:
     from src.ticket_types.models import TicketType
+    from src.tickets.models import Ticket
 
 
 class EventStatus(str, Enum):
@@ -41,3 +42,4 @@ class Event(Base, UUIDMixin, TimestampMixin):
     venue: Mapped[Venue] = relationship(foreign_keys=[venue_id], back_populates="events")
     category: Mapped[Category] = relationship(foreign_keys=[category_id], back_populates="events")
     ticket_types: Mapped[list["TicketType"]] = relationship(back_populates="event")
+    tickets: Mapped[list["Ticket"]] = relationship(back_populates="event")

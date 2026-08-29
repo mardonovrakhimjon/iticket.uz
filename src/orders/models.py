@@ -7,9 +7,11 @@ from sqlalchemy import ForeignKey
 
 from src.core.database import Base, UUIDMixin, TimestampMixin
 
+
 if TYPE_CHECKING:
     from src.users.models import User
     from src.ticket_types.models import TicketType
+    from src.tickets.models import Ticket
 
 
 class OrderStatus(str, Enum):
@@ -36,3 +38,5 @@ class Order(Base, UUIDMixin, TimestampMixin):
     ticket_type: Mapped["TicketType"] = relationship(
         foreign_keys=[ticket_type_id], back_populates="orders"
     )
+
+    tickets: Mapped[list["Ticket"]] = relationship(back_populates="order")

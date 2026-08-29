@@ -8,6 +8,7 @@ from src.events.models import Event
 
 if TYPE_CHECKING:
     from src.orders.models import Order
+    from src.tickets.models import Ticket
 
 
 class TicketType(Base, UUIDMixin, TimestampMixin):
@@ -22,3 +23,4 @@ class TicketType(Base, UUIDMixin, TimestampMixin):
 
     event: Mapped[Event] = relationship(foreign_keys=[event_id], back_populates="ticket_types")
     orders: Mapped[list["Order"]] = relationship(back_populates="ticket_type")
+    tickets: Mapped[list["Ticket"]] = relationship(back_populates="ticket_type")
